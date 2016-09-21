@@ -48,6 +48,7 @@ class WickedPdf
       if options.is_a?(Hash) && options.key?(:pdf)
         log_pdf_creation
         options[:basic_auth] = set_basic_auth(options)
+        Rails.logger.debug "Passed basic auth: #{options[:basic_auth]}"
         options.delete :pdf
         make_pdf((WickedPdf.config || {}).merge(options))
       else
@@ -73,6 +74,7 @@ class WickedPdf
     end
 
     def make_pdf(options = {})
+      Rails.logger.debug "MAKE PDF: #{options}"
       render_opts = {
         :template => options[:template],
         :layout => options[:layout],
@@ -81,7 +83,9 @@ class WickedPdf
       }
       render_opts[:locals] = options[:locals] if options[:locals]
       render_opts[:file] = options[:file] if options[:file]
+      Rails.logger.debug "RENDER OPTIONS: #{render_opts.inspect}"
       html_string = render_to_string(render_opts)
+      Rails.logger.debug "HTML STRING: #{html_string.inspect}"
       options = prerender_header_and_footer(options)
       w = WickedPdf.new(options[:wkhtmltopdf])
       w.pdf_from_string(html_string, options)
