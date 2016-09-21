@@ -30,5 +30,6 @@ desc
   spec.add_development_dependency 'rubocop' if RUBY_VERSION >= '2.0.0'
   spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'mocha'
+  spec.add_development_dependency 'httplog'
   spec.add_development_dependency 'test-unit'
 end
