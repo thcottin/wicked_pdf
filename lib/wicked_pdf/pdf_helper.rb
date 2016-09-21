@@ -54,7 +54,9 @@ class WickedPdf
         make_pdf((WickedPdf.config || {}).merge(options))
       else
         Rails.logger.debug "ELSE -> CALL RENDER TO STRING WITHOUT WICKED PDF. Options: #{options.inspect} Args: #{args.inspect}"
-        render_to_string_without_wicked_pdf(options, *args, &block)
+        rendered = render_to_string_without_wicked_pdf(options, *args, &block)
+        Rails.logger.debug "RENDERED: #{rendered}"
+        rendered
       end
     end
 
