@@ -113,7 +113,7 @@ class WickedPdf
       else
         Rails.logger.debug "ELSE"
         pdf_content = make_pdf(options)
-        Rails.logger.debut "PDF CONTENT: #{pdf_content.inspect}"
+        Rails.logger.debug "PDF CONTENT"
         File.open(options[:save_to_file], 'wb') { |file| file << pdf_content } if options[:save_to_file]
         send_data(pdf_content, :filename => pdf_name + '.pdf', :type => 'application/pdf', :disposition => options[:disposition]) unless options[:save_only]
       end
