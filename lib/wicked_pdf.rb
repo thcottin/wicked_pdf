@@ -27,7 +27,6 @@ require 'wicked_pdf/version'
 require 'wicked_pdf/railtie'
 require 'wicked_pdf/tempfile'
 require 'wicked_pdf/middleware'
-require 'httplog'
 
 class WickedPdf
   DEFAULT_BINARY_VERSION = Gem::Version.new('0.9.9')

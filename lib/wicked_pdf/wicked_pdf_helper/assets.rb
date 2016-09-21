@@ -13,10 +13,13 @@ class WickedPdf
       end
 
       def wicked_pdf_stylesheet_link_tag(*sources)
+        Rails.logger.debug "WICKED_PDF_STYLESHEET_LINK_TAG: #{sources.inspect}"
         stylesheet_contents = sources.collect do |source|
           source = WickedPdfHelper.add_extension(source, 'css')
           "<style type='text/css'>#{read_asset(source)}</style>"
         end.join("\n")
+
+        Rails.logger.debug "STYLESHEET CONTENTS: #{stylesheet_contents}"
 
         stylesheet_contents.gsub(ASSET_URL_REGEX) do
           if Regexp.last_match[1].starts_with?('data:')
@@ -99,6 +102,7 @@ class WickedPdf
       end
 
       def read_asset(source)
+        Rails.logger.debug "READ_ASSET: #{source}"
         if precompiled_or_absolute_asset?(source)
           pathname = asset_pathname(source)
           if pathname =~ URI_REGEXP
@@ -107,6 +111,7 @@ class WickedPdf
             IO.read(pathname)
           end
         else
+          Rails.logger.debug "FIND_ASSET"
           find_asset(source).to_s
         end
       end

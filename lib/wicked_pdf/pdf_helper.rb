@@ -34,7 +34,6 @@ class WickedPdf
     end
 
     def render_with_wicked_pdf(options = nil, *args, &block)
-      Rails.logger.debug "RENDER WITH WICKED PDF: #{options}"
       if options.is_a?(Hash) && options.key?(:pdf)
         log_pdf_creation
         options[:basic_auth] = set_basic_auth(options)
@@ -45,17 +44,13 @@ class WickedPdf
     end
 
     def render_to_string_with_wicked_pdf(options = nil, *args, &block)
-      Rails.logger.debug "RENDER TO STRING WITH WICKED PDF: #{options}"
       if options.is_a?(Hash) && options.key?(:pdf)
         log_pdf_creation
         options[:basic_auth] = set_basic_auth(options)
-        Rails.logger.debug "Passed basic auth: #{options[:basic_auth]}"
         options.delete :pdf
         make_pdf((WickedPdf.config || {}).merge(options))
       else
-        Rails.logger.debug "ELSE -> CALL RENDER TO STRING WITHOUT WICKED PDF. Options: #{options.inspect} Args: #{args.inspect}"
         rendered = render_to_string_without_wicked_pdf(options, *args, &block)
-        Rails.logger.debug "RENDERED: #{rendered}"
         rendered
       end
     end
@@ -78,7 +73,6 @@ class WickedPdf
     end
 
     def make_pdf(options = {})
-      Rails.logger.debug "MAKE PDF: #{options}"
       render_opts = {
         :template => options[:template],
         :layout => options[:layout],
@@ -87,16 +81,13 @@ class WickedPdf
       }
       render_opts[:locals] = options[:locals] if options[:locals]
       render_opts[:file] = options[:file] if options[:file]
-      Rails.logger.debug "RENDER OPTIONS: #{render_opts.inspect}"
       html_string = render_to_string(render_opts)
-      Rails.logger.debug "HTML STRING: #{html_string.inspect}"
       options = prerender_header_and_footer(options)
       w = WickedPdf.new(options[:wkhtmltopdf])
       w.pdf_from_string(html_string, options)
     end
 
     def make_and_send_pdf(pdf_name, options = {})
-      Rails.logger.debug "MAKE AND SEND PDF #{pdf_name}"
       options[:wkhtmltopdf] ||= nil
       options[:layout] ||= false
       options[:template] ||= File.join(controller_path, action_name)
@@ -113,9 +104,7 @@ class WickedPdf
         render_opts[:file] = options[:file] if options[:file]
         render(render_opts)
       else
-        Rails.logger.debug "ELSE"
         pdf_content = make_pdf(options)
-        Rails.logger.debug "PDF CONTENT"
         File.open(options[:save_to_file], 'wb') { |file| file << pdf_content } if options[:save_to_file]
         send_data(pdf_content, :filename => pdf_name + '.pdf', :type => 'application/pdf', :disposition => options[:disposition]) unless options[:save_only]
       end
