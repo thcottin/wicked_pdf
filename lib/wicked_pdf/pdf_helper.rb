@@ -44,6 +44,7 @@ class WickedPdf
     end
 
     def render_to_string_with_wicked_pdf(options = nil, *args, &block)
+      Rails.logger.debug "RENDER TO STRING WITH WICKED PDF: #{options}"
       if options.is_a?(Hash) && options.key?(:pdf)
         log_pdf_creation
         options[:basic_auth] = set_basic_auth(options)
